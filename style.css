@@ -59,6 +59,11 @@
     background-color: cadetblue;
     align-items: center;
     justify-content: center;
+    font-size: 25px;
+}
+
+.btn:hover{
+    filter: brightness(1.2);
 }
 
 #buttons > div:first-child > div{
