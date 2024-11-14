@@ -1,6 +1,8 @@
 
 let leftExp = 0
 let rightExp = 0
+let decimal = false
+let base = 10
 let activeOperation = null
 
 const buttons = document.querySelectorAll(".btn");
@@ -19,7 +21,13 @@ numbers.map(btn => btn.addEventListener('click', () => {
    if (displayResult === 0) {
     displayResult = parseInt(btn.textContent)
    }else{
-    displayResult = displayResult*10 + parseInt(btn.textContent)
+    if(decimal){
+        displayResult = +displayResult + parseInt(btn.textContent)/base
+        base *= 10
+    }else{
+        displayResult = +displayResult*10 + parseInt(btn.textContent)
+    }
+    
    }
    display.textContent = displayResult
    if (activeOperation !== null){
@@ -36,6 +44,13 @@ actionButtons.map(btn => {
             btn.addEventListener('click', () => {
                 display.textContent = 0
                 displayResult = 0
+                leftExp = 0
+                rightExp = 0
+                if (activeOperation !== null){
+                    let btnOp = Array.from(buttons).filter((btn) => btn.textContent === activeOperation)
+                    btnOp[0].style.filter = "brightness(1)";
+                    activeOperation = null
+                }
             })
             break;
         case 'C':
@@ -59,63 +74,85 @@ actionButtons.map(btn => {
             break;
         case '.':
             btn.addEventListener('click', () => {
-                displayResult += "." 
-                display.textContent = displayResult  
+                if(!decimal){
+                    displayResult += "." 
+                    display.textContent = displayResult 
+                    decimal = true
+                }
             })
             break;
         case '+':
             btn.addEventListener('click', () => {
                 if (activeOperation !== null){
                     rightExp = displayResult
-                    display.textContent = operate(leftExp, rightExp, activeOperation)
+                    displayResult = operate(leftExp, rightExp, activeOperation)
+                    display.textContent = displayResult
                 }
                 btn.style.filter = "brightness(1.2)";
                 activeOperation = '+'
                 leftExp = displayResult
                 displayResult = 0
+                decimal = false
+                base = 10
             })
             break;
         case '-':
             btn.addEventListener('click', () => {
                 if (activeOperation !== null){
                     rightExp = displayResult
-                    display.textContent = operate(leftExp, rightExp, activeOperation)
+                    displayResult = operate(leftExp, rightExp, activeOperation)
+                    display.textContent = displayResult
                 }
                 btn.style.filter = "brightness(1.2)";
                 activeOperation = '-'
                 leftExp = displayResult
                 displayResult = 0
+                decimal = false
+                base = 10
             })
             break;
         case '*':
             btn.addEventListener('click', () => {
                 if (activeOperation !== null){
                     rightExp = displayResult
-                    display.textContent = operate(leftExp, rightExp, activeOperation)
+                    displayResult = operate(leftExp, rightExp, activeOperation)
+                    display.textContent = displayResult
                 }
                 btn.style.filter = "brightness(1.2)";
                 activeOperation = '*'
                 leftExp = displayResult
                 displayResult = 0
+                decimal = false
+                base = 10
             })
             break;
         case '/':
             btn.addEventListener('click', () => {
                 if (activeOperation !== null){
                     rightExp = displayResult
-                    display.textContent = operate(leftExp, rightExp, activeOperation)
+                    displayResult = operate(leftExp, rightExp, activeOperation)
+                    display.textContent = displayResult
                 }
                 btn.style.filter = "brightness(1.2)";
                 activeOperation = '/'
                 leftExp = displayResult
                 displayResult = 0
+                decimal = false
+                base = 10
             })
             break;
         case '=':
-            if (activeOperation !== null){
-                display.textContent = operate(leftExp, rightExp, activeOperation)
-                displayResult = 0
-            }
+            btn.addEventListener('click', () => {
+                if (activeOperation !== null){
+                    rightExp = displayResult
+                    displayResult = operate(leftExp, rightExp, activeOperation)
+                    display.textContent = displayResult
+                    leftExp = displayResult
+                    activeOperation = null
+                    decimal = false
+                    base = 10
+                }
+            })
             break;
         default:
             display.textContent = "ERROR"
@@ -125,17 +162,37 @@ actionButtons.map(btn => {
 })
 
 function operate(leftExp, rightExp, operator){
+    console.log("operando: ", leftExp, operator, rightExp)
     switch (operator){
         case '+':
-            return leftExp + rightExp
+            if (parseInt(+leftExp + rightExp)!== parseFloat(+leftExp + rightExp)){
+                return parseFloat((+leftExp + rightExp).toFixed(6))
+            }else{
+                return (+leftExp + rightExp)
+            }
         case '-':
-            return leftExp - rightExp
+            if (parseInt(+leftExp - rightExp)!== parseFloat(+leftExp - rightExp)){
+                return parseFloat((+leftExp - rightExp).toFixed(6))
+            }else{
+                return (+leftExp - rightExp)
+            }
         case "*":
-            return leftExp * rightExp
+            if (parseInt(+leftExp * rightExp)!== parseFloat(+leftExp * rightExp)){
+                return parseFloat((+leftExp * rightExp).toFixed(6))
+            }else{
+                return (+leftExp * rightExp)
+            }
         case "/":
-            return rightExp !== 0 ? leftExp / rightExp : "OOPS, Cero Division"
-        case '%':
-            return 
+            if(rightExp !== 0){
+                if (parseInt(+leftExp / rightExp)!== parseFloat(+leftExp / rightExp)){
+                    return parseFloat((+leftExp / rightExp).toFixed(6))
+                }else{
+                    return (+leftExp / rightExp)
+                }
+            }else{
+                return "Cero Division"
+            }
         default:
+            break;
     }
 }
