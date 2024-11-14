@@ -25,15 +25,12 @@
 }
 
 #display{
+    text-align: right;
     background-color: gray;
     border-radius: 15px;
-    flex-grow: 0;
-    display: flex;
-    justify-content: right;
-    align-items: center;
     padding: 10px;
     font-size: 80px;
-    flex-basis: 20vh;
+    flex-basis: 15vh;
 }
 
 #buttons{

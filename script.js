@@ -14,6 +14,9 @@ const actionButtons = Array.from(buttons)
                 .filter((btn => isNaN(btn.textContent)));
 
 const display = document.querySelector("#display")
+display.addEventListener('keypress', (event) => {
+    Array.from(buttons).filter((btn)=> btn.textContent === event.key || event.key === "Enter" && btn.textContent === "=" ? btn.dispatchEvent(new Event('click')) : false) 
+})
 let displayResult = 0
 display.textContent = displayResult
 
@@ -162,7 +165,6 @@ actionButtons.map(btn => {
 })
 
 function operate(leftExp, rightExp, operator){
-    console.log("operando: ", leftExp, operator, rightExp)
     switch (operator){
         case '+':
             if (parseInt(+leftExp + rightExp)!== parseFloat(+leftExp + rightExp)){
